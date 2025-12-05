@@ -4,7 +4,7 @@ An **experimental fan project** designed to assist Warhammer 40,000 players in e
 
 This tool provides a **theoretical scoring system** to help players visualize the potential strengths and weaknesses of their units. It converts raw stats into comparable scores for Offense, Defense, and Tactical utility.
 
-🔗 **Live Tool:** [https://keroro6262.github.io/unit-power-scorer-40k/](https://keroro6262.github.io/unit-power-scorer-40k/)
+🔗 **Live Tool:** [https://keroro6262.github.io/unit-power-scorer-40k.github.io/](https://keroro6262.github.io/unit-power-scorer-40k.github.io/)
 
 ## 📝 Project Goal
 
