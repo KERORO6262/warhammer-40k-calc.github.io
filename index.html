@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>戰錘 40K 編隊權重計算器 v4.6</title>
+        <link rel="stylesheet" href="assets/css/style.css">
+    </head>
+    <body>
+
+        <div class="container">
+            <div class="panel">
+                <h2>單位編輯器 (Unit Editor)</h2>
+                <form id="unitForm">
+                    <input type="hidden" id="editIndex" value="-1">
+
+                    <div class="input-group">
+                        <label>單位名稱 (Unit Name)</label>
+                        <input type="text" id="uName"
+                            placeholder="例如: Terminator Squad" required>
+                    </div>
+
+                    <div class="input-row">
+                        <div class="input-group" style="flex:1">
+                            <label>分數 (Points)</label>
+                            <input type="number" id="uPts" value="100" required>
+                        </div>
+                        <div class="input-group" style="flex:1">
+                            <label>模型數量 (Models)</label>
+                            <input type="number" id="uModels" value="5"
+                                placeholder="用於統計">
+                        </div>
+                    </div>
+
+                    <h3>🛡️ 生存與戰術數據 (Stats)</h3>
+                    <div class="input-row">
+                        <div class="input-group"><label>強韌度
+                                (Toughness)</label><input type="number" id="uT"
+                                value="4"></div>
+                        <div class="input-group"><label>護甲保護
+                                (Save)</label><input type="number" id="uSv"
+                                value="3" placeholder="3+"></div>
+                        <div class="input-group"><label>總血量
+                                (Wounds)</label><input type="number" id="uW"
+                                value="10"></div>
+                    </div>
+                    <div class="input-row">
+                        <div class="input-group"><label>領導值
+                                (Leadership)</label><input type="number"
+                                id="uLd" value="6" placeholder="6+"></div>
+                        <div class="input-group"><label>目標控制 (OC)</label><input
+                                type="number" id="uOC" value="10"></div>
+                        <div class="input-group"><label>特殊保護
+                                (Invulnerable)</label><input type="number"
+                                id="uInv" placeholder="4+" value="7"></div>
+                        <div class="input-group"><label>不覺疼痛 (FNP)</label><input
+                                type="number" id="uFNP" placeholder="6+"
+                                value="7"></div>
+                    </div>
+
+                    <h3>⚔️ 武器配置 (Weapons)</h3>
+
+                    <div class="input-row">
+                        <div class="input-group" style="flex:3;">
+                            <label>武器名稱 (Weapon Name)</label>
+                            <input type="text" id="wName"
+                                placeholder="例如: Storm Bolter">
+                        </div>
+                        <div class="input-group" style="flex:1;">
+                            <label>數量 (Qty)</label>
+                            <input type="number" id="wQty" value="1" min="1">
+                        </div>
+                    </div>
+
+                    <div class="weapon-stats-grid">
+                        <div class="input-group"><label>攻擊 (A)</label><input
+                                type="number" id="wA" value="2"></div>
+                        <div class="input-group"><label>技巧 (BS/WS)</label><input
+                                type="number" id="wHit" value="3"
+                                placeholder="3+"></div>
+                        <div class="input-group"><label>力量 (S)</label><input
+                                type="number" id="wS" value="4"></div>
+                        <div class="input-group"><label>穿甲 (AP)</label><input
+                                type="number" id="wAP" value="0"
+                                placeholder="0"></div>
+                        <div class="input-group"><label>傷害 (D)</label><input
+                                type="number" id="wD" value="1"></div>
+                    </div>
+                    <div class="kw-panel" style="border-color: var(--accent);">
+                        <label
+                            style="color:var(--accent); font-size:0.9rem; margin-bottom:8px; display:block; border-bottom:1px solid #4a5568; padding-bottom:5px;">
+                            👑 領袖與光環增益 (Leader & Aura Buffs)
+                        </label>
+                        <div
+                            style="font-size: 0.8rem; color: #a0aec0; margin-bottom: 8px;">
+                            設定領袖賦予的具體數值 (若無則留空或填預設值)：
+                        </div>
+
+                        <div class="kw-grid" style="margin-bottom: 10px;">
+                            <div class="kw-check-row">
+                                <span>賦予: 致死 (Lethal)</span>
+                                <input type="checkbox" id="buffLethal">
+                            </div>
+                            <div class="kw-check-row">
+                                <span>賦予: 毀滅 (Dev. W)</span>
+                                <input type="checkbox" id="buffDev">
+                            </div>
+                            <div class="kw-check-row">
+                                <span>難以受傷 (-1 Wound)</span>
+                                <input type="checkbox" id="buffMinusWound">
+                            </div>
+                        </div>
+
+                        <div
+                            style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
+                            <div class="input-group">
+                                <label>命中加值 (+Hit)</label>
+                                <input type="number" id="buffHit"
+                                    placeholder="0" value="0">
+                            </div>
+                            <div class="input-group">
+                                <label>持續打擊 (Sus)</label>
+                                <input type="number" id="buffSus"
+                                    placeholder="0" value="0">
+                            </div>
+                            <div class="input-group">
+                                <label>盔保修正 (Sv Mod)</label>
+                                <input type="number" id="buffSv" placeholder="0"
+                                    value="0" title="輸入 1 代表護甲從 3+ 變 2+">
+                            </div>
+                            <div class="input-group">
+                                <label>賦予特保 (Inv)</label>
+                                <input type="number" id="buffInv"
+                                    placeholder="7" value="7">
+                            </div>
+                            <div class="input-group">
+                                <label>賦予FNP</label>
+                                <input type="number" id="buffFnp"
+                                    placeholder="7" value="7">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="kw-panel">
+                        <label
+                            style="color:var(--accent); font-size:0.85rem; margin-bottom:8px; display:block; border-bottom:1px solid #4a5568; padding-bottom:5px;">
+                            特效參數 (Effect Parameters)
+                        </label>
+                        <div class="kw-grid">
+                            <div class="input-group">
+                                <label>持續打擊 (Sustained Hits)</label>
+                                <select id="kwSus"><option value="0">無
+                                        (None)</option><option
+                                        value="1">1</option><option
+                                        value="2">2</option><option
+                                        value="3">D3</option></select>
+                            </div>
+                            <div class="input-group">
+                                <label>暴擊觸發 (Critical On)</label>
+                                <select id="kwCrit"><option value="6">6 (標準
+                                        Standard)</option><option
+                                        value="5">5+</option><option
+                                        value="4">4+</option><option
+                                        value="2">2+ (Anti-X)</option></select>
+                            </div>
+
+                            <div class="input-group"
+                                style="grid-column: span 2;">
+                                <label>擇一組別代號 (Select-One Group ID)</label>
+                                <input type="text" id="wGrp"
+                                    placeholder="例如: A (同組取最高分) / Leave empty if distinct"
+                                    style="border-color:#d69e2e;">
+                            </div>
+
+                            <div class="kw-check-row">
+                                <span>致死打擊 (Lethal Hits)</span>
+                                <input type="checkbox" id="kwLethal">
+                            </div>
+                            <div class="kw-check-row">
+                                <span>毀滅創傷 (Dev. Wounds)</span>
+                                <input type="checkbox" id="kwDev">
+                            </div>
+                            <div class="kw-check-row">
+                                <span>雙連 (Twin-Linked)</span>
+                                <input type="checkbox" id="kwTwin">
+                            </div>
+                            <div class="kw-check-row">
+                                <span>洪流 (Torrent)</span>
+                                <input type="checkbox" id="kwTorrent">
+                            </div>
+                        </div>
+                        <div class="input-group" style="margin-top:10px;">
+                            <label>其他關鍵詞 (Other Keywords)</label>
+                            <input type="text" id="wTags"
+                                placeholder="Blast, Heavy, Pistol...">
+                        </div>
+                    </div>
+
+                    <button type="button" class="btn btn-sec"
+                        onclick="addWeaponBuffer()">+ 加入武器 (Add Weapon)</button>
+                    <div id="weaponBufferList"
+                        style="margin:10px 0; color:#cbd5e0; font-size:0.9rem; text-align:center;">(暫無武器
+                        No Weapons)</div>
+
+                    <div style="display:flex; gap:10px; margin-top:20px;">
+                        <button type="submit" class="btn btn-add">💾 儲存單位 (Save
+                            Unit)</button>
+                        <button type="button" class="btn btn-sec"
+                            onclick="resetForm()">重置 (Reset)</button>
+                    </div>
+                </form>
+            </div>
+
+            <div>
+                <div class="panel"
+                    style="margin-bottom: 20px; padding: 15px; display: flex; align-items: center; justify-content: space-between;">
+                    <label
+                        style="color: var(--text-main); font-weight: bold;">⚔️
+                        戰局規模 (Game Size):</label>
+                    <select id="gameSizeSelect"
+                        style="width: 200px; border-color: var(--accent);">
+                        <option value="1000">1000 分 (Incursion)</option>
+                        <option value="2000" selected>2000 分 (Strike
+                            Force)</option>
+                        <option value="3000">3000 分 (Onslaught)</option>
+                    </select>
+                </div>
+
+                <div class="dashboard">
+                    <div class="score-card" id="cardPoints">
+                        <small>軍隊總分 (Total Points)</small>
+                        <strong id="totalPoints">0</strong>
+                    </div>
+                    <div class="score-card" id="cardOffense">
+                        <small>攻擊評分 (Offense)</small>
+                        <strong class="text-accent" id="totalOffense">0</strong>
+                    </div>
+                    <div class="score-card" id="cardDefense">
+                        <small>防禦評分 (Defense)</small>
+                        <strong class="text-blue" id="totalDefense">0</strong>
+                    </div>
+                    <div class="score-card" id="cardTactical">
+                        <small>戰術權重 (Tactical)</small>
+                        <strong class="text-green" id="totalTactical">0</strong>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <h3>編隊名單 (Army Roster)</h3>
+                    <table id="rosterTable">
+                        <thead>
+                            <tr>
+                                <th width="10%" style="text-align:center;">數量
+                                    (Qty)</th> <th width="30%">單位資訊 (Unit
+                                    Info)</th> <th width="20%">基礎數值 (Stats)</th>
+                                <th width="30%">戰力分析 (Analysis)</th>
+                                <th width="15%">操作 (Action)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="rosterBody"></tbody>
+                    </table>
+
+                    <div style="margin-top:15px; text-align:right;">
+                        <button class="btn btn-danger" style="width:auto;"
+                            onclick="clearAll()">清除所有 (Clear All)</button>
+                        <button class="btn btn-sec" style="width:auto;"
+                            onclick="exportData()">匯出 JSON</button>
+                        <input type="file" id="importFile" style="display:none;"
+                            onchange="importData(this)">
+                        <button class="btn btn-sec" style="width:auto;"
+                            onclick="document.getElementById('importFile').click()">匯入
+                            JSON</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="assets/js/script.js"></script>
+
+    </body>
+</html>

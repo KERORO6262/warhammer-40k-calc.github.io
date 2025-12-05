@@ -1,0 +1,325 @@
+:root {
+    --primary: #2d3748;
+    --accent: #d69e2e;
+    --accent-hover: #b7791f;
+    --danger: #e53e3e;
+    --success: #38a169;
+    --bg: #1a202c;
+    --card-bg: #2d3748;
+    --text-main: #f7fafc;
+    --text-sub: #a0aec0;
+    --border: #4a5568;
+}
+
+body {
+    font-family: 'Microsoft JhengHei', 'Segoe UI', system-ui, sans-serif;
+    background-color: var(--bg);
+    color: var(--text-main);
+    margin: 0;
+    padding: 20px;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 400px 1fr;
+    gap: 20px;
+}
+
+@media (max-width: 1000px) {
+    .container {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* 面板樣式 */
+.panel {
+    background: var(--card-bg);
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+h2 {
+    margin-top: 0;
+    color: var(--accent);
+    border-bottom: 2px solid var(--border);
+    padding-bottom: 10px;
+    font-size: 1.3rem;
+}
+
+h3 {
+    font-size: 1rem;
+    color: #e2e8f0;
+    margin: 15px 0 10px 0;
+    border-left: 4px solid var(--accent);
+    padding-left: 10px;
+}
+
+.input-group {
+    margin-bottom: 12px;
+}
+
+.input-group label {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--text-sub);
+    margin-bottom: 4px;
+    font-weight: bold;
+}
+
+.input-row {
+    display: flex;
+    gap: 10px;
+}
+
+/* 武器數值網格 */
+.weapon-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.weapon-stats-grid .input-group label {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 0.75rem;
+}
+
+/* 輸入框樣式 */
+input,
+select {
+    background: #171923;
+    border: 1px solid #4a5568;
+    color: white;
+    padding: 0 8px;
+    height: 36px;
+    line-height: 34px;
+    border-radius: 4px;
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 0.9rem;
+}
+
+input:focus,
+select:focus {
+    border-color: var(--accent);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(214, 158, 46, 0.3);
+}
+
+/* 關鍵詞面板 */
+.kw-panel {
+    background: #171923;
+    padding: 12px;
+    border-radius: 6px;
+    border: 1px solid #4a5568;
+    margin-bottom: 15px;
+}
+
+.kw-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.kw-check-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    color: var(--text-sub);
+}
+
+.kw-check-row input[type="checkbox"] {
+    width: auto;
+    margin: 0;
+    cursor: pointer;
+    transform: scale(1.2);
+    height: auto;
+}
+
+/* 按鈕 */
+.btn {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 5px;
+    color: #1a202c;
+    transition: filter 0.2s;
+}
+
+.btn:hover {
+    filter: brightness(110%);
+}
+
+.btn-add {
+    background: var(--accent);
+}
+
+.btn-sec {
+    background: #4a5568;
+    color: white;
+}
+
+.btn-danger {
+    background: var(--danger);
+    color: white;
+}
+
+/* 儀表板與表格 */
+.dashboard {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.score-card {
+    background: var(--card-bg);
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+    border: 1px solid var(--border);
+    position: relative;
+    cursor: help;
+}
+
+.score-card small {
+    display: block;
+    color: var(--text-sub);
+    font-size: 0.8rem;
+    margin-bottom: 5px;
+}
+
+.score-card strong {
+    display: block;
+    font-size: 1.8rem;
+    color: var(--text-main);
+}
+
+.text-accent {
+    color: var(--accent) !important;
+}
+
+.text-blue {
+    color: #63b3ed !important;
+}
+
+.text-green {
+    color: #68d391 !important;
+}
+
+/* 動態 JS Tooltip 樣式 - 寬度加寬以適應長文字 */
+.custom-tooltip {
+    position: absolute;
+    background: #1a202c;
+    border: 1px solid var(--accent);
+    color: #f7fafc;
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    white-space: pre-line;
+    width: 260px;
+    /* 加寬 */
+    z-index: 9999;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.6);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    display: none;
+}
+
+.custom-tooltip.show {
+    display: block;
+    opacity: 1;
+}
+
+input[type="number"]::-webkit-inner-spin-button {
+    opacity: 1;
+    /* 讓數字調整按鈕更明顯 */
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+th {
+    text-align: left;
+    padding: 12px;
+    background: #232936;
+    border-bottom: 2px solid var(--border);
+    color: var(--text-sub);
+    font-size: 0.85rem;
+}
+
+td {
+    padding: 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+}
+
+tr:hover {
+    background: #2a3241;
+}
+
+.tag {
+    display: inline-block;
+    padding: 2px 6px;
+    font-size: 0.7rem;
+    border-radius: 3px;
+    margin-right: 4px;
+    background: #4a5568;
+    color: #e2e8f0;
+}
+
+.tag-kw {
+    background: #2c5282;
+    color: #bee3f8;
+}
+
+.tag-grp {
+    background: #744210;
+    color: #f6e05e;
+    border: 1px solid #d69e2e;
+}
+
+.weapon-row {
+    font-size: 0.85rem;
+    color: #cbd5e0;
+    margin-top: 6px;
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px dashed #4a5568;
+    padding-bottom: 3px;
+    align-items: center;
+}
+
+.bar-container {
+    height: 6px;
+    background: #1a202c;
+    margin-top: 5px;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.bar-fill {
+    height: 100%;
+    background: var(--accent);
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
+.bar-def {
+    background: #63b3ed;
+}
