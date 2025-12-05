@@ -426,9 +426,10 @@ function saveAndRender() {
                     </div>
                 </div>
             </td>
-            <td>
-                <button class="btn btn-sec" style="padding:5px; margin-bottom:5px;" onclick="editUnit(${i})">編輯 Edit</button>
-                <button class="btn btn-danger" style="padding:5px;" onclick="removeUnit(${i})">刪除 Del</button>
+<td>
+                <button class="btn btn-sec" style="padding:5px; margin-bottom:5px; background-color:#2b6cb0;" onclick="duplicateUnit(${i})">❏ 複製 Copy</button>
+                <button class="btn btn-sec" style="padding:5px; margin-bottom:5px;" onclick="editUnit(${i})">✎ 編輯 Edit</button>
+                <button class="btn btn-danger" style="padding:5px;" onclick="removeUnit(${i})">✖ 刪除 Del</button>
             </td>
         </tr>`;
     }).join('');
@@ -437,6 +438,29 @@ function saveAndRender() {
     document.getElementById('totalOffense').innerText = totalOff.toFixed(0);
     document.getElementById('totalDefense').innerText = totalDef.toFixed(0);
     document.getElementById('totalTactical').innerText = totalTac.toFixed(0);
+}
+
+function duplicateUnit(i) {
+    let originalUnit = myArmy[i];
+    let newUnit = JSON.parse(JSON.stringify(originalUnit));
+
+    // 嘗試解析名稱結尾的數字
+    const nameRegex = /^(.*?)(\d+)$/;
+    const match = newUnit.name.match(nameRegex);
+
+    if (match) {
+        // 如果名稱結尾是數字 (e.g., "Sisters 1")，則數字 +1
+        let baseName = match[1];
+        let num = parseInt(match[2]);
+        newUnit.name = `${baseName}${num + 1}`;
+    } else {
+        // 否則直接加 " 2"
+        newUnit.name = `${newUnit.name} 2`;
+    }
+
+    newUnit.count = 1; // 重置為 1 隊
+    myArmy.splice(i + 1, 0, newUnit);
+    saveAndRender();
 }
 
 function editUnit(i) {
