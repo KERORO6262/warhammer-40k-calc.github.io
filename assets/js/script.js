@@ -32,16 +32,20 @@ function calcDefenseScore(u) {
     // Sv 3+ = 1.0 (基準)
     // Sv 2+ = 1.8 (終結者/坦克等級)
     let svFactor = 1.0;
-    if (u.sv <= 2) svFactor = 1.8;
-    else if (u.sv === 3) svFactor = 1.3;
-    else if (u.sv === 4) svFactor = 1.0;
-    else if (u.sv === 5) svFactor = 0.7;
+    if (effectiveSv <= 2) svFactor = 1.8;
+    else if (effectiveSv === 3) svFactor = 1.3;
+    else if (effectiveSv === 4) svFactor = 1.0;
+    else if (effectiveSv === 5) svFactor = 0.7;
     else svFactor = 0.5;
 
     // 特保修正 (4++ 非常強大)
     // 檢查原生特保，或 Buff 給予的 5++
     let effectiveInv = u.inv || 7;
-    if (buffs.inv5 && effectiveInv > 5) effectiveInv = 5; // 如果 Buff 給 5++ 且比原本好
+    //讀取儲存的 'buffs.inv' (預設為 7 代表無)
+    let buffInvVal = buffs.inv || 7;
+    if (buffInvVal < effectiveInv) {
+        effectiveInv = buffInvVal;
+    } // 如果 Buff 給 5++ 且比原本好
 
     if (effectiveInv <= 4) svFactor *= 1.4;
     else if (effectiveInv <= 5) svFactor *= 1.2;
@@ -91,7 +95,7 @@ function calcWeaponPower(w, u = null) {
     let baseHit = w.hit - hitMod;
     if (baseHit < 2) baseHit = 2;
     // 1. 命中期望 (BS/WS)
-    let hitProb = (7 - w.hit) / 6;
+    let hitProb = (7 - baseHit) / 6;
     if (w.torrent) hitProb = 1.0; // 洪流自動命中
 
 
@@ -579,4 +583,3 @@ function updateTooltipPosition(target, tooltip) {
     tooltip.style.top = `${top}px`;
     tooltip.style.left = `${left}px`;
 }
-
