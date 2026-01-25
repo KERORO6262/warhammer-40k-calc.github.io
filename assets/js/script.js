@@ -74,17 +74,26 @@ function calcDefenseScore(u) {
     return (u.w * tFactor * svFactor * fnpFactor).toFixed(1);
 }
 
+const D6_SUM_COUNTS = [0, 0, 1, 2, 3, 4, 5, 6, 5, 4, 3, 2, 1];
+
+const calcBattleShockPassRate = (ld) => {
+    const clampedLd = Math.max(2, Math.min(12, ld));
+    const passCounts = D6_SUM_COUNTS.slice(0, clampedLd + 1).reduce((sum, count) => sum + count, 0);
+    return passCounts / 36;
+};
+
 function calcTacticalScore(u) {
-    // 10版 OC 為王，LD 影響 Battle-shock
-    // OC 權重：每點 OC 價值約 3 分 (OC 2 的步兵價值 6)
-    let ocScore = u.oc * 3.0;
+    // 10版 OC 為王，LD 影響 Battle-shock 穩定度
+    // OC 權重：總 OC = 單模 OC * 模型數，再乘上 3 分
+    const modelCount = u.models || 1;
+    const totalOc = u.oc * modelCount;
+    const ocScore = totalOc * 3.0;
 
-    // LD 權重：Ld 6+ 為基準，每好一點增加穩定性
-    // Ld 5+ (10-5=5) * 5 = 25分
-    // Ld 6+ (10-6=4) * 5 = 20分
-    let ldScore = Math.max(0, 10 - u.ld) * 5;
+    // LD 權重：以 2D6 通過率映射為小幅加分
+    const passRate = calcBattleShockPassRate(u.ld);
+    const stabilityScore = Math.max(0, 5 + (passRate - 0.5) * 60);
 
-    return (ocScore + ldScore).toFixed(1);
+    return (ocScore + stabilityScore).toFixed(1);
 }
 
 function calcWeaponPower(w, u = null) {
@@ -383,7 +392,7 @@ function saveAndRender() {
             totalPts += u.pts * unitQty;
             totalOff += offScore * unitQty;
             totalDef += defScore * modelCount * unitQty;
-            totalTac += tacScore * modelCount * unitQty;
+            totalTac += tacScore * unitQty;
         }
 
         // 視覺上的單兵戰力佔比 (依然顯示單兵能力，不乘以數量，方便評估單位體質)
