@@ -82,7 +82,7 @@ function calcTacticalScore(u) {
     // LD 權重：Ld 6+ 為基準，每好一點增加穩定性
     // Ld 5+ (10-5=5) * 5 = 25分
     // Ld 6+ (10-6=4) * 5 = 20分
-    let ldScore = (11 - u.ld) * 4;
+    let ldScore = Math.max(0, 10 - u.ld) * 5;
 
     return (ocScore + ldScore).toFixed(1);
 }
