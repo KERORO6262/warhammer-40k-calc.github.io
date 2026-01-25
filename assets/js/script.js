@@ -523,11 +523,48 @@ function exportData() {
     a.href = dataStr; a.download = "army_list_v4_pretty.json"; a.click();
 }
 
+function normalizeImportedArmy(payload) {
+    const armyList = Array.isArray(payload)
+        ? payload
+        : payload?.army || payload?.armyV4 || payload?.data || payload?.units;
+    if (!Array.isArray(armyList)) return null;
+
+    return armyList.map((unit) => ({
+        ...unit,
+        models: unit.models || 1,
+        inv: unit.inv || 7,
+        fnp: unit.fnp || 7,
+        buffs: unit.buffs || {},
+        weapons: Array.isArray(unit.weapons) ? unit.weapons : []
+    }));
+}
+
 function importData(input) {
     const file = input.files[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = function (e) { myArmy = JSON.parse(e.target.result); saveAndRender(); };
+    reader.onload = function (e) {
+        const jsonText = e.target.result.replace(/^\uFEFF/, '').trim();
+        let parsedPayload;
+        try {
+            parsedPayload = JSON.parse(jsonText);
+        } catch (error) {
+            alert("JSON 解析失敗，請確認檔案內容是否為有效 JSON。");
+            input.value = '';
+            return;
+        }
+
+        const normalizedArmy = normalizeImportedArmy(parsedPayload);
+        if (!normalizedArmy) {
+            alert("匯入失敗：找不到有效的部隊清單資料。");
+            input.value = '';
+            return;
+        }
+
+        myArmy = normalizedArmy;
+        saveAndRender();
+        input.value = '';
+    };
     reader.readAsText(file);
 }
 
